@@ -199,6 +199,7 @@ const baseRules = [
   "GEOSITE,ONEDRIVE,OneDrive",
   "GEOSITE,MICROSOFT,Microsoft",
   "GEOSITE,TELEGRAM,Telegram",
+  "GEOSITE,META,Meta",
   "GEOSITE,YOUTUBE,YouTube",
   "GEOSITE,GOOGLE,Google",
   "GEOSITE,NETFLIX,Netflix",
@@ -206,6 +207,7 @@ const baseRules = [
   "GEOSITE,BAHAMUT,Bahamut",
   "GEOSITE,BILIBILI,Bilibili",
   "GEOSITE,PIKPAK,PikPak",
+  "GEOSITE,STEAM,Steam",
   `GEOSITE,GFW,${PROXY_GROUPS.SELECT}`,
   `GEOSITE,CN,${PROXY_GROUPS.DIRECT}`,
   `GEOSITE,PRIVATE,${PROXY_GROUPS.DIRECT}`,
@@ -417,6 +419,12 @@ function buildProxyGroups({
       proxies: n,
     },
     {
+      name: "Meta",
+      icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Facebook.png",
+      type: "select",
+      proxies: n,
+    },
+    {
       name: "Truth Social",
       icon: "https://gcore.jsdelivr.net/gh/powerfullz/override-rules@master/icons/TruthSocial.png",
       type: "select",
@@ -431,6 +439,12 @@ function buildProxyGroups({
     {
       name: "PikPak",
       icon: "https://gcore.jsdelivr.net/gh/powerfullz/override-rules@master/icons/PikPak.png",
+      type: "select",
+      proxies: n,
+    },
+    {
+      name: "Steam",
+      icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Steam.png",
       type: "select",
       proxies: n,
     },
