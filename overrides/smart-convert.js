@@ -251,6 +251,10 @@ function buildDnsConfig({ mode: e, fakeIpFilter: t }) {
       "tcp://208.67.222.222",
       "tcp://8.26.56.2",
     ],
+    hosts: {
+      "google.cn": "google.com",
+      "www.google.cn": "www.google.com",
+    },
     "proxy-server-nameserver": [
       "https://dns.alidns.com/dns-query",
       "tls://dot.pub",
