@@ -251,10 +251,6 @@ function buildDnsConfig({ mode: e, fakeIpFilter: t }) {
       "tcp://208.67.222.222",
       "tcp://8.26.56.2",
     ],
-    hosts: {
-      "google.cn": "google.com",
-      "www.google.cn": "www.google.com",
-    },
     "proxy-server-nameserver": [
       "https://dns.alidns.com/dns-query",
       "tls://dot.pub",
@@ -510,6 +506,16 @@ function buildProxyGroups({
   ].filter(Boolean);
 }
 
+function buildHttpConfig() {
+  return {
+    mitm: ["g.cn", "*.google.cn"],
+    "url-rewrite": [
+      "^http://g\.cn https://www.google.com transparent",
+      "^https?://www\.google\.cn https://www.google.com 302",
+    ],
+  };
+}
+
 function main(e) {
   const t = { proxies: e.proxies };
   const hasLow = /0\.[0-5]|低倍率|省流|大流量|实验性/i.test(
@@ -569,5 +575,6 @@ function main(e) {
     dns: fakeIPEnabled ? dnsConfigFakeIp : dnsConfig,
     "geodata-mode": true,
     "geox-url": geoxURL,
+    http: buildHttpConfig(),
   });
 }
