@@ -305,6 +305,30 @@ function buildProxyGroups({
     tolerance: 20,
   };
 
+  const specialSet = o.flatMap((p) => [
+    // 1. [供应商] 节点：包含该供应商下所有节点 (不带过滤)
+    {
+      name: `${p} 节点`,
+      icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
+      ...commonSet,
+      filter: `^(?i)\\[${p}\\]`,
+    },
+    // 2. [供应商] 非家宽：该供应商下排除家宽后的节点
+    {
+      name: `${p} 非家宽`,
+      icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png",
+      ...commonSet,
+      filter: `^(?i)\\[${p}\\](?!.*${HOME_REGEX})`,
+    },
+    // 3. [供应商] 家宽：该供应商下仅限家宽的节点
+    {
+      name: `${p} 家宽`,
+      icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Airport.png",
+      ...commonSet,
+      filter: `^(?i)\\[${p}\\].*${HOME_REGEX}`,
+    },
+  ]);
+
   return [
     {
       name: PROXY_GROUPS.SELECT,
@@ -483,34 +507,14 @@ function buildProxyGroups({
           filter: "(?i)0.[0-5]|低倍率|省流|大流量|实验性",
         }
       : null,
-    ...o.flatMap((p) => [
-      // 1. [供应商] 节点：包含该供应商下所有节点 (不带过滤)
-      {
-        name: `${p} 节点`,
-        icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
-        ...commonSet,
-        filter: `^(?i)\\[${p}\\]`,
-      },
-      // 2. [供应商] 非家宽：该供应商下排除家宽后的节点
-      {
-        name: `${p} 非家宽`,
-        icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png",
-        ...commonSet,
-        filter: `^(?i)\\[${p}\\](?!.*${HOME_REGEX})`,
-      },
-      // 3. [供应商] 家宽：该供应商下仅限家宽的节点
-      {
-        name: `${p} 家宽`,
-        icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Airport.png",
-        ...commonSet,
-        filter: `^(?i)\\[${p}\\].*${HOME_REGEX}`,
-      },
-    ]),
+    ...specialSet,
     {
       name: PROXY_GROUPS.TRANSFER,
       icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
       type: "select",
-      proxies: n.filter((p) => !new RegExp(SELF_HOSTED_REGEX, "i").test(p)),
+      proxies: specialSet.filter(
+        (p) => !new RegExp(SELF_HOSTED_REGEX, "i").test(p),
+      ),
     },
   ].filter(Boolean);
 }
