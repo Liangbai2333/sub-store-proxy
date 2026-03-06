@@ -526,7 +526,7 @@ function buildHttpConfig() {
 }
 
 function main(e) {
-  let selfHostedRegex = new RegExp(`(?i)${SELF_HOSTED_REGEX}`);
+  let selfHostedRegex = new RegExp(SELF_HOSTED_REGEX, "i");
   const proxies = (e.proxies || []).map((p) => {
     if (p.name && selfHostedRegex.test(p.name)) {
       return { ...p, "dialer-proxy": PROXY_GROUPS.TRANSFER };
