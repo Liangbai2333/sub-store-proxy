@@ -306,26 +306,26 @@ function buildProxyGroups({
   };
 
   const specialSet = o.flatMap((p) => [
-    // 1. [供应商] 节点：包含该供应商下所有节点 (不带过滤)
+    // 1. [供应商] 节点：包含该供应商下所有节点 (排除自建)
     {
       name: `${p} 节点`,
       icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
       ...commonSet,
-      filter: `^(?i)\\[${p}\\]`,
+      filter: `^(?i)\\[${p}\\](?!.*${SELF_HOSTED_REGEX})`,
     },
-    // 2. [供应商] 非家宽：该供应商下排除家宽后的节点
+    // 2. [供应商] 非家宽：该供应商下排除家宽和自建后的节点
     {
       name: `${p} 非家宽`,
       icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Direct.png",
       ...commonSet,
-      filter: `^(?i)\\[${p}\\](?!.*${HOME_REGEX})`,
+      filter: `^(?i)\\[${p}\\](?!.*${HOME_REGEX})(?!.*${SELF_HOSTED_REGEX})`,
     },
-    // 3. [供应商] 家宽：该供应商下仅限家宽的节点
+    // 3. [供应商] 家宽：该供应商下仅限家宽的节点 (排除自建)
     {
       name: `${p} 家宽`,
       icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Airport.png",
       ...commonSet,
-      filter: `^(?i)\\[${p}\\].*${HOME_REGEX}`,
+      filter: `^(?i)\\[${p}\\](?!.*${SELF_HOSTED_REGEX}).*${HOME_REGEX}`,
     },
   ]);
 
@@ -512,9 +512,12 @@ function buildProxyGroups({
       name: PROXY_GROUPS.TRANSFER,
       icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
       type: "select",
-      "include-all": true,
-      filter: `(?i)^(?!.*${SELF_HOSTED_REGEX})`,
-      proxies: ["DIRECT"],
+      proxies: [
+        "DIRECT",
+        ...specialSet
+          .filter((g) => !new RegExp(SELF_HOSTED_REGEX, "i").test(g.name))
+          .map((g) => g.name),
+      ],
     },
   ].filter(Boolean);
 }
