@@ -512,9 +512,12 @@ function buildProxyGroups({
       name: PROXY_GROUPS.TRANSFER,
       icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
       type: "select",
-      proxies: specialSet
-        .filter((g) => !new RegExp(SELF_HOSTED_REGEX, "i").test(g.name))
-        .map((g) => g.name),
+      proxies: [
+        "DIRECT",
+        ...specialSet
+          .filter((g) => !new RegExp(SELF_HOSTED_REGEX, "i").test(g.name))
+          .map((g) => g.name),
+      ],
     },
   ].filter(Boolean);
 }
