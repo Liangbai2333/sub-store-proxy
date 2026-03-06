@@ -53,6 +53,8 @@ function parseProviders(proxies) {
 }
 
 const HOME_REGEX = "(家宽|家庭|家庭宽带|Home|Broadband)";
+const SELF_HOSTED_REGEX =
+  "(自建|自营|自选|自用|自购|自配|DIY|BYO|SELF|OWN|PRIVATE)";
 
 const PROXY_GROUPS = {
   SELECT: "选择代理",
@@ -60,6 +62,7 @@ const PROXY_GROUPS = {
   MANUAL: "手动选择",
   FALLBACK: "故障转移",
   DIRECT: "直连",
+  TRANSFER: "中转组",
   LANDING: "落地节点",
   LOW_COST: "低倍率节点",
   ALL_HOME: "所有家宽",
@@ -503,6 +506,12 @@ function buildProxyGroups({
         filter: `^(?i)\\[${p}\\].*${HOME_REGEX}`,
       },
     ]),
+    {
+      name: PROXY_GROUPS.TRANSFER,
+      icon: "https://gcore.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
+      type: "select",
+      proxies: n,
+    },
   ].filter(Boolean);
 }
 
@@ -517,7 +526,14 @@ function buildHttpConfig() {
 }
 
 function main(e) {
-  const t = { proxies: e.proxies };
+  let selfHostedRegex = new RegExp(`(?i)${SELF_HOSTED_REGEX}`);
+  const proxies = (e.proxies || []).map((p) => {
+    if (p.name && selfHostedRegex.test(p.name)) {
+      return { ...p, "dialer-proxy": PROXY_GROUPS.TRANSFER };
+    }
+    return p;
+  });
+  const t = { proxies };
   const hasLow = /0\.[0-5]|低倍率|省流|大流量|实验性/i.test(
     JSON.stringify(e.proxies),
   );
